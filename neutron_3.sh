@@ -1,6 +1,6 @@
 #!/bin/sh
-password="root"
-ip="192.168.123.150"
+password=$1
+ip=$2
 
 sudo sed -i '/connection = sqlite/d' /etc/neutron/neutron.conf
 sudo sed -i '/core_plugin = ml2/d' /etc/neutron/neutron.conf
@@ -50,7 +50,7 @@ password = "$password""\
 
 sudo echo \
 "[database]
-connection = mysql+pymysql://neutron:"$password"@127.0.0.1/neutron"\
+connection = mysql+pymysql://neutron:"$password"@controller/neutron"\
 >> /etc/neutron/neutron.conf
 
 

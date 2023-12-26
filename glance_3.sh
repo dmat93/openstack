@@ -1,6 +1,6 @@
 #!/bin/sh
 
-password="root"
+password=$1
 
 sudo apt install glance -y
 sudo sed -i '/connection = ' /etc/glance/glance-api.conf
@@ -11,7 +11,7 @@ sudo sed -i '/\[glance_store\]/d' /etc/glance/glance-api.conf
 
 sudo echo \
 "[database]
-connection = mysql+pymysql://glance:"$password"@127.0.0.1/glance"\
+connection = mysql+pymysql://glance:"$password"@controller/glance"\
 >> /etc/glance/glance-api.conf
 
 sudo echo \

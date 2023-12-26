@@ -1,4 +1,4 @@
-password="root"
+password=$1
 sudo mysql -e "CREATE DATABASE placement;"
 sudo mysql -e "CREATE USER 'placement'@'%' IDENTIFIED BY '"$password"';"
 sudo mysql -e "CREATE USER 'placement'@'localhost' IDENTIFIED BY'"$password"';"

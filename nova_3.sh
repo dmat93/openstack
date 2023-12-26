@@ -1,6 +1,6 @@
 #!/bin/sh
-password="root"
-ip="192.168.123.150"
+password=$1
+ip=$2
 
 sudo sed -i '/connection = sqlite/d' /etc/nova/nova.conf
 sudo sed -i '/connection = sqlite/d' /etc/nova/nova.conf
@@ -18,15 +18,22 @@ sudo sed -i '/\[placement\]/d' /etc/nova/nova.conf
 sudo sed -i '/\[oslo_concurrency\]/d' /etc/nova/nova.conf
 sudo sed -i '/\[libvirt\]/d' /etc/nova/nova.conf
 sudo sed -i '/\[service_user\]/d' /etc/nova/nova.conf
+sudo sed -i '/\[vmware]\]/d' /etc/nova/nova.conf
 
 sudo echo \
 "[api_database]
-connection = mysql+pymysql://nova:"$password"@127.0.0.1/nova_api"\
+connection = mysql+pymysql://nova:"$password"@controller/nova_api"\
 >> /etc/nova/nova.conf
 
 sudo echo \
+"[vmware]
+novncproxy_base_url = http://controller:6080/vnc_auto.html"\
+>> /etc/nova/nova.conf
+
+
+sudo echo \
 "[database]
-connection = mysql+pymysql://nova:"$password"@127.0.0.1/nova"\
+connection = mysql+pymysql://nova:"$password"@controller/nova"\
 >> /etc/nova/nova.conf
 
 
@@ -83,7 +90,7 @@ password = "$password""\
 sudo echo \
 "[service_user]
 send_service_user_token = true
-auth_url = https://controller/identity
+auth_url = http://controller:5000/v3
 auth_strategy = keystone
 auth_type = password
 project_domain_name = Default

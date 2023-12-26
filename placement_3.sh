@@ -1,6 +1,6 @@
 #!/bin/sh
-password="root"
-sudo sed -i '/connection = ' /etc/placement/placement.conf
+password=$1
+sudo sed -i '/connection =/d ' /etc/placement/placement.conf
 sudo sed -i '/\[api\]/d' /etc/placement/placement.conf
 sudo sed -i '/\[keystone_authtoken\]/d' /etc/placement/placement.conf
 sudo sed -i '/\[placement_database\]/d' /etc/placement/placement.conf
@@ -8,7 +8,7 @@ sudo sed -i '/\[placement_database\]/d' /etc/placement/placement.conf
 
 sudo echo \
 "[placement_database]
-connection = mysql+pymysql://placement:"$password"@127.0.0.1/placement"\
+connection = mysql+pymysql://placement:"$password"@controller/placement"\
 >> /etc/placement/placement.conf
 
 sudo echo \

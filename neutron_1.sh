@@ -1,6 +1,6 @@
 #!/bin/sh
 
-password="root"
+password=$1
 sudo mysql -e "CREATE DATABASE neutron;"
 
 

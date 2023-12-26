@@ -1,6 +1,6 @@
 #!/bin/sh
 
-password="root"
+password=$1
 sudo mysql -e "CREATE DATABASE nova_api;"
 sudo mysql -e "CREATE DATABASE nova;"
 sudo mysql -e "CREATE DATABASE nova_cell0;"
