@@ -1,6 +1,6 @@
 #!/bin/sh
 
-ip_controller="192.168.123.150"
+ip_controller=$1
 
 apt install etcd -y
 

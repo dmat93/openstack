@@ -1,5 +1,5 @@
 #!/bin/sh
-password="root"
+password=$1
 sudo mysql -e "CREATE DATABASE keystone;"
 
 sudo mysql -e "CREATE USER 'keystone'@'%' IDENTIFIED BY '"$password"';"
@@ -16,7 +16,7 @@ sudo sed -i '/\[token\]/d' /etc/keystone/keystone.conf
 
 sudo echo \
 "[database]
-connection = mysql+pymysql://keystone:"$password"@127.0.0.1/keystone"\
+connection = mysql+pymysql://keystone:"$password"@controller/keystone"\
 >> /etc/keystone/keystone.conf
 
 sudo echo \
@@ -58,4 +58,3 @@ export OS_IDENTITY_API_VERSION=3
 export OS_IMAGE_API_VERSION=2"\
 > admin-openrc
 
-. admin-openrc
