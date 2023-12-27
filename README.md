@@ -1,5 +1,6 @@
 # GUIDA
 
+### COMPUTE E CONTROLLER
 Utilizza la verisone zed
 
 ```bash
@@ -28,22 +29,18 @@ Specifica l'interfaccia della rete di managment
 
 ```bash
 
-sudo ./net.sh enp1s0
+sudo ./controller/net.sh enp1s0
 
 ```
 
 ## Chrony
-### Controller
+### COMPUTE E CONTROLLER
 Aggiungi il cidr della rete di managment
 
 ```bash
 
-sudo ./chrony.sh 192.168.123.0/24
+sudo ./controller/chrony.sh 192.168.123.0/24
 
-```
-### Compute
-```bash
-sudo ./chrony.sh 192.168.123.0/24
 ```
 
 ## Mysql
@@ -51,7 +48,7 @@ sudo ./chrony.sh 192.168.123.0/24
 Aggiungi ip del controller
 
 ```bash
-sudo ./mysql.sh 192.168.123.150
+sudo ./controller/mysql.sh 192.168.123.150
 ```
 
 ## RabbitMQ
@@ -59,7 +56,7 @@ sudo ./mysql.sh 192.168.123.150
 Crea password rabbit
 
 ```bash
-sudo ./rabbitmq.sh root
+sudo ./controller/rabbitmq.sh root
 ```
 
 ## Memcache
@@ -67,7 +64,7 @@ sudo ./rabbitmq.sh root
 Aggiungi ip controller
 
 ```bash
-sudo ./memcached.sh 192.168.123.150
+sudo ./controller/memcached.sh 192.168.123.150
 ```
 
 ## ETCD
@@ -75,14 +72,14 @@ sudo ./memcached.sh 192.168.123.150
 Aggiungi ip controller
 
 ```bash
-sudo ./etcd.sh 192.168.123.150
+sudo ./controller/etcd.sh 192.168.123.150
 ```
 ## Keystone
 ### Controller
-Crea password. Potrebbe richiedere qualche minuto!
+Crea password e passa ip controller. Potrebbe richiedere qualche minuto!
 
 ```bash
-sudo ./keystone.sh root
+sudo ./controller/keystone.sh root 192.168.123.150
 ```
 
 Verifica che tutto sia andato bene. Ti verrà chiesta un password, inserisc quella creata al passo precedente.
@@ -99,7 +96,7 @@ openstack --os-auth-url http://controller:5000/v3 \
 Crea password per il DB.
 
 ```bash
-sudo ./glance_1.sh root
+sudo ./controller/glance_1.sh root
 ```
 Crea utente e scegli nuova password. Si aprirà una schermata in cui ti chiede di creare una nuova password.
 ```bash
@@ -108,18 +105,18 @@ openstack user create --domain default --password-prompt glance
 
 Esegui senza sudo! Usa la password scelta al passo precedente
 ```bash
-./glance_2.sh  
+./controller/glance_2.sh root 192.168.123.150
 ```
 
 Esegui con sudo! Usa la password scelta al passo precedente
 
 ```bash
-sudo ./glance_3.sh root 
+sudo ./controller/glance_3.sh root 192.168.123.150
 ```
 Esegui senza sudo!
 
 ```bash
-./glance_4.sh 
+./controller/glance_4.sh  
 ```
 
 #### Per testare
@@ -161,7 +158,7 @@ Se l'output è cosi allora OK:
 Crea password per il DB.
 
 ```bash
-sudo ./placement_1.sh root
+sudo ./controller/placement_1.sh root
 ```
 
 Si aprirà una schermata da cui creare una nuova password
@@ -173,12 +170,12 @@ openstack user create --domain default --password-prompt placement
 Eseguire (Senza sudo!) inserendo la password creata precedentemente
 
 ```bash
-./placement_2.sh 
+./controller/placement_2.sh 192.168.123.150
 ```
 
-Eseguire (Con sudo!) inserendo la password creata precedentemente
+Eseguire (Con sudo!) inserendo la password creata precedentemente e l'ip del controller
 ```bash
-sudo ./placement_3.sh root
+sudo ./controller/placement_3.sh root 192.168.123.150
 ```
 
 #### Per testare
@@ -209,7 +206,7 @@ Se l'output è cosi allora ok
 Crea password per il DB.
 
 ```bash
-sudo ./nova_1.sh root
+sudo ./controller/nova_1.sh root
 ```
 
 Si aprirà una schermata da cui creare una nuova password
@@ -221,17 +218,17 @@ openstack user create --domain default --password-prompt nova
 Eseguire (Senza sudo!) inserendo la password creata precedentemente
 
 ```bash
-./nova_2.sh
+./controller/nova_2.sh 192.168.123.150
 ```
 
 Eseguire (Con sudo!) inserendo la password creata precedentemente e l'ip del controller
 ```bash
-sudo ./nova_3.sh root 192.168.123.150
+sudo ./controller/nova_3.sh root 192.168.123.150
 ```
 ### Compute
-Specifica password creata in precedenza e ip del compute
+Specifica password creata in precedenza e ip del **compute**
 ```bash
-sudo ./nova.sh root 192.168.123.177
+sudo ./compute/nova.sh root 192.168.123.177
 ```
 ### Controller
 Discovery dei compute.
@@ -258,7 +255,7 @@ L'output dovrebbe essere simile a:
 Crea password per il DB.
 
 ```bash
-sudo ./neutron_1.sh root 
+sudo ./controller/neutron_1.sh root 
 ```
 
 Si aprirà una schermata da cui creare una nuova password
@@ -270,17 +267,17 @@ openstack user create --domain default --password-prompt neutron
 Eseguire (Senza sudo!) 
 
 ```bash
-./neutron_2.sh
+./controller/neutron_2.sh 192.168.123.150
 ```
 
 Eseguire (Con sudo!) inserendo la password creata precedentemente e l'ip del controller
 ```bash
-sudo ./neutron_3.sh root 192.168.123.150
+sudo ./controller/neutron_3.sh root 192.168.123.150
 ```
 ### Compute
-Specifica password creata in precedenza e ip del compute
+Specifica password creata in precedenza e ip del **compute**
 ```bash
-sudo ./neutron.sh root 192.168.123.177
+sudo ./compute/neutron.sh root 192.168.123.177
 ```
 
 ### Per testare
