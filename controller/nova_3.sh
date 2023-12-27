@@ -21,18 +21,18 @@ sudo sed -i '/\[service_user\]/d' /etc/nova/nova.conf
 
 sudo echo \
 "[api_database]
-connection = mysql+pymysql://nova:"$password"@"$ip"/nova_api"\
+connection = mysql+pymysql://nova:"$password"@controller/nova_api"\
 >> /etc/nova/nova.conf
 
 sudo echo \
 "[database]
-connection = mysql+pymysql://nova:"$password"@"$ip"/nova"\
+connection = mysql+pymysql://nova:"$password"@controller/nova"\
 >> /etc/nova/nova.conf
 
 
 sudo echo \
 "[DEFAULT]
-transport_url = rabbit://openstack:"$password"@"$ip":5672/
+transport_url = rabbit://openstack:"$password"@controller:5672/
 log_dir = /var/log/nova
 lock_path = /var/lock/nova
 state_path = /var/lib/nova
