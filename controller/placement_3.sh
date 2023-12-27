@@ -9,7 +9,7 @@ sudo sed -i '/\[placement_database\]/d' /etc/placement/placement.conf
 
 sudo echo \
 "[placement_database]
-connection = mysql+pymysql://placement:"$password"@"$ip"/placement"\
+connection = mysql+pymysql://placement:"$password"@controller/placement"\
 >> /etc/placement/placement.conf
 
 sudo echo \
