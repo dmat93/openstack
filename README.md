@@ -210,6 +210,7 @@ Crea password per il DB.
 
 ```bash
 sudo ./nova_1.sh root
+```
 
 Si aprirà una schermata da cui creare una nuova password
 
@@ -281,4 +282,114 @@ Specifica password creata in precedenza e ip del compute
 ```bash
 sudo ./neutron.sh root 192.168.123.177
 ```
+
+### Per testare
+Esegui sul controller
+```bash
+openstack network agent list
+```
+
+Se l'output è cosi allora ok:
+```bash
++--------------------------------------+--------------------+------------+-------------------+-------+-------+---------------------------+
+| ID                                   | Agent Type         | Host       | Availability Zone | Alive | State | Binary                    |
++--------------------------------------+--------------------+------------+-------------------+-------+-------+---------------------------+
+| 11bfa343-0089-4fa7-8d80-32da140cd0ac | Linux bridge agent | controller | None              | :-)   | UP    | neutron-linuxbridge-agent |
+| 712406b4-c480-4043-8c49-9a9abcea85a9 | DHCP agent         | controller | nova              | :-)   | UP    | neutron-dhcp-agent        |
+| 73cf6d54-bf5c-490c-b685-7532b56eb10e | Linux bridge agent | compute1   | None              | :-)   | UP    | neutron-linuxbridge-agent |
+| c573aed7-43da-43a1-97c6-c27569f01843 | Metadata agent     | controller | None              | :-)   | UP    | neutron-metadata-agent    |
++--------------------------------------+--------------------+------------+-------------------+-------+-------+---------------------------+
+
+```
+## Horizon
+### Controller
+```bash
+sudo apt install openstack-dashboard
+```
+Aggiungi le seguenti righe a */etc/openstack-dashboard/local_settings.py* commentando quelle già esistenti:
+
+```bash
+
+#Metti ip del controller
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '192.168.123.150:11211',
+    },
+}
+
+
+OPENSTACK_HOST = "192.168.123.150"
+OPENSTACK_KEYSTONE_URL = "http://%s:5000/v3" % OPENSTACK_HOST
+
+OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT = True
+
+OPENSTACK_API_VERSIONS = {
+    "identity": 3,
+    "image": 2,
+    "volume": 3,
+}
+
+OPENSTACK_KEYSTONE_DEFAULT_DOMAIN = "Default"
+
+OPENSTACK_KEYSTONE_DEFAULT_ROLE = "member"
+
+TIME_ZONE = "Europe/Rome"
+```
+Aggiungi la seguente riga a */etc/apache2/conf-available/openstack-dashboard.conf* (se necessario):
+```bash
+WSGIApplicationGroup %{GLOBAL}
+```
+
+```bash
+sudo systemctl reload apache2.service
+```
+
+Ora vai a 192.168.123.150/horizon per accedere.
+
+
+## Rete fisica
+### Controller
+Esegui esattamente questo comando
+```bash
+openstack network create --share --external --provider-physical-network provider --provider-network-type flat provider
+```
+Esegui questo comando sostituiendo a **192.168.123** l'indirizzo di sottorete di menagment in cui sono i compute e il controller
+```bash
+openstack subnet create --network provider \
+--allocation-pool start=192.168.123.10,end=192.168.123.100 \
+--dns-nameserver 8.8.8.8 --gateway 192.168.123.1 \
+--subnet-range 192.168.123.0/24 provider
+```
+
+Sostituisci selfservice con il nome che preferisci
+```bash
+openstack network create selfservice
+```
+
+Sostituisci (se vuoi) l'indirizzo di sottorete che preferisci. Puoi lanciare questo comando anche così.
+```bash
+openstack subnet create --network selfservice \
+--dns-nameserver 8.8.4.4 --gateway 172.16.1.1 \
+--subnet-range 172.16.1.0/24 selfservice
+```
+
+```bash
+openstack router create router
+```
+
+```bash
+openstack router add subnet router selfservice
+```
+
+```bash
+openstack router set router --external-gateway provider
+```
+
+
+
+
+
+
+
 
