@@ -17,7 +17,7 @@ sudo sed -i '/\[token\]/d' /etc/keystone/keystone.conf
 
 sudo echo \
 "[database]
-connection = mysql+pymysql://keystone:"$password"@"$ip_controller"/keystone"\
+connection = mysql+pymysql://keystone:"$password"@controller/keystone"\
 >> /etc/keystone/keystone.conf
 
 sudo echo \
