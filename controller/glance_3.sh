@@ -12,7 +12,7 @@ sudo sed -i '/\[glance_store\]/d' /etc/glance/glance-api.conf
 
 sudo echo \
 "[database]
-connection = mysql+pymysql://glance:"$password"@"$ip_controller"/glance"\
+connection = mysql+pymysql://glance:"$password"@controller/glance"\
 >> /etc/glance/glance-api.conf
 
 sudo echo \
