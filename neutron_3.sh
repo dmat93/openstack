@@ -10,6 +10,7 @@ sudo sed -i '/\[DEFAULT\]/d' /etc/neutron/neutron.conf
 sudo sed -i '/connection = sqlite/d' /etc/neutron/neutron.conf
 sudo sed -i '/\[nova\]/d' /etc/neutron/neutron.conf
 sudo sed -i '/\[oslo_concurrency\]/d' /etc/neutron/neutron.conf
+ssudo sed -i '/\[experimental\]/d' /etc/neutron/neutron.conf
 
 sudo echo \
 "[DEFAULT]
@@ -51,6 +52,11 @@ password = "$password""\
 sudo echo \
 "[database]
 connection = mysql+pymysql://neutron:"$password"@controller/neutron"\
+>> /etc/neutron/neutron.conf
+
+sudo echo \
+"[experimental]
+linuxbridge = true"\
 >> /etc/neutron/neutron.conf
 
 
