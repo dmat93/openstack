@@ -51,7 +51,7 @@ password = "$password""\
 
 sudo echo \
 "[database]
-connection = mysql+pymysql://neutron:"$password"@"$ip"/neutron"\
+connection = mysql+pymysql://neutron:"$password"@controller/neutron"\
 >> /etc/neutron/neutron.conf
 
 sudo echo \
