@@ -11,7 +11,7 @@ sudo add-apt-repository cloud-archive:zed
 ```
 ## Configurazione rete
 ### COMPUTE E CONTROLLER
-Modifica */etc/hosts* commentando 127.0.1.1 controller
+Modifica */etc/hosts* commentando la riga contenente 127.0.1.1 e aggiungendo ip e host dei controller/compute
 
 ```bash
 
