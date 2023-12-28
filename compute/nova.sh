@@ -52,7 +52,7 @@ sudo echo \
 "[vnc]
 enabled = true
 server_listen = 0.0.0.0
-novncproxy_base_url = http://"$ip":6080/vnc_auto.html
+novncproxy_base_url = http://controller:6080/vnc_auto.html
 server_proxyclient_address = "$ip""\
 >> /etc/nova/nova.conf
 
