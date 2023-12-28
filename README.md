@@ -1,4 +1,5 @@
 # GUIDA
+Testato su Ubuntu 22.04.3 LTS. Assicurati che tutte le macchine abbiano questa versione di ubuntu, altrimenti potrebbe non funzionare il discovery dei compute.
 
 ### COMPUTE E CONTROLLER
 Utilizza la verisone zed
@@ -82,13 +83,26 @@ Crea password e passa ip controller. Potrebbe richiedere qualche minuto!
 sudo ./controller/keystone.sh root 192.168.123.150
 ```
 
-Verifica che tutto sia andato bene. Ti verrà chiesta un password, inserisc quella creata al passo precedente.
+Verifica che tutto sia andato bene. 
 
 ```bash
 . admin-openrc
 openstack --os-auth-url http://controller:5000/v3 \
 --os-project-domain-name Default --os-user-domain-name Default \
 --os-project-name admin --os-username admin token issue
+```
+
+Se l'output è cosi allora ok:
+
+```bash
++------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Field      | Value                                                                                                                                                                                   |
++------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| expires    | 2023-12-28T13:46:02+0000                                                                                                                                                                |
+| id         | gAAAAABljW4KfD0NvTZ2rtuL5k7y4qSben7IkBH5s5ZnsL7-kYlqH5TT9EbX2WgBTkUJ5_DletQcc8fEX0s0h3vEqwqZY3AwrDXeDLNpbCWVdthGcSp6Qx1YNw7qplmtv4EutUP4OnDdjqrrK29Ds_0XzbfyR6KcPrcWyjRJ--wPAVaHKt-Z-bw |
+| project_id | 142934028dd840a4b6271b2c41c88446                                                                                                                                                        |
+| user_id    | 22dbbad875564745965295fd5ef90e63                                                                                                                                                        |
++------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 ```
 
 ## Glance
@@ -228,7 +242,7 @@ sudo ./controller/nova_3.sh root 192.168.123.150
 ### Compute
 Specifica password creata in precedenza e ip del **compute**
 ```bash
-sudo ./compute/nova.sh root 192.168.123.177
+sudo ./compute/nova.sh 192.168.123.177 root 
 ```
 ### Controller
 Discovery dei compute.
@@ -301,7 +315,7 @@ Se l'output è cosi allora ok:
 ## Horizon
 ### Controller
 ```bash
-sudo apt install openstack-dashboard
+sudo apt install openstack-dashboard -y
 ```
 Aggiungi le seguenti righe a */etc/openstack-dashboard/local_settings.py* commentando quelle già esistenti:
 
