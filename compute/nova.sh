@@ -1,6 +1,9 @@
 #!/bin/sh
 ip=$1
-password=$2
+RABBIT_PASS=`cat ../controller/RABBIT_PASS`
+NEUTRON_PASS=`cat ../controller/NEUTRON_PASS`
+NOVA_PASS=`cat ../controller/NOVA_PASS`
+PLACEMENT_PASS=`cat ../controller/PLACEMENT_PASS`
 sudo apt install nova-compute -y
 
 sudo sed -i '/connection = sqlite/d' /etc/nova/nova.conf
@@ -22,7 +25,7 @@ sudo sed -i '/\[service_user\]/d' /etc/nova/nova.conf
 
 sudo echo \
 "[DEFAULT]
-transport_url = rabbit://openstack:"$password"@controller:5672/
+transport_url = rabbit://openstack:"$RABBIT_PASS"@controller:5672/
 log_dir = /var/log/nova
 lock_path = /var/lock/nova
 state_path = /var/lib/nova
@@ -45,7 +48,7 @@ project_domain_name = Default
 user_domain_name = Default
 project_name = service
 username = nova
-password = "$password""\
+password = "$NOVA_PASS""\
 >> /etc/nova/nova.conf
 
 sudo echo \
@@ -75,7 +78,7 @@ auth_type = password
 user_domain_name = Default
 auth_url = http://controller:5000/v3
 username = placement
-password = "$password""\
+password = "$PLACEMENT_PASS""\
 >> /etc/nova/nova.conf
 
 sudo echo \

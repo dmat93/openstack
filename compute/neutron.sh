@@ -1,7 +1,8 @@
 #!/bin/sh
 
-password=$1
-ip=$2
+RABBIT_PASS=`cat ../controller/RABBIT_PASS`
+NEUTRON_PASS=`cat ../controller/NEUTRON_PASS`
+ip=$1
 sudo apt install neutron-linuxbridge-agent -y
 
 sudo sed -i '/connection = sqlite/d' /etc/neutron/neutron.conf
@@ -13,7 +14,7 @@ sudo sed -i '/\[oslo_concurrency\]/d' /etc/neutron/neutron.conf
 
 sudo echo \
 "[DEFAULT]
-transport_url = rabbit://openstack:"$password"@controller
+transport_url = rabbit://openstack:"$RABBIT_PASS"@controller
 auth_strategy = keystone"\
 >> /etc/neutron/neutron.conf
 
@@ -27,7 +28,7 @@ project_domain_name = default
 user_domain_name = default
 project_name = service
 username = neutron
-password = "$password""\
+password = "$NEUTRON_PASS""\
 >> /etc/neutron/neutron.conf
 
 
@@ -74,7 +75,7 @@ user_domain_name = default
 region_name = RegionOne
 project_name = service
 username = neutron
-password = "$password""\
+password = "$NEUTRON_PASS""\
 >>   /etc/nova/nova.conf
 
 
