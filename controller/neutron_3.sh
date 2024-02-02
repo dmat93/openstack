@@ -1,6 +1,9 @@
 #!/bin/sh
-password=$1
-ip=$2
+RABBIT_PASS=`cat RABBIT_PASS`
+NOVA_PASS=`cat NOVA_PASS`
+NEUTRON_PASS=`cat NEUTRON_PASS`
+METADATA_SECRET=`cat METADATA_SECRET`
+ip=$1
 
 sudo sed -i '/connection = sqlite/d' /etc/neutron/neutron.conf
 sudo sed -i '/core_plugin = ml2/d' /etc/neutron/neutron.conf
@@ -14,7 +17,7 @@ ssudo sed -i '/\[experimental\]/d' /etc/neutron/neutron.conf
 
 sudo echo \
 "[DEFAULT]
-transport_url = rabbit://openstack:"$password"@"$ip"/
+transport_url = rabbit://openstack:"$RABBIT_PASS"@"$ip"/
 core_plugin = ml2
 service_plugins = router
 allow_overlapping_ips = true
@@ -32,7 +35,7 @@ user_domain_name = default
 region_name = RegionOne
 project_name = service
 username = nova
-password = "$password""\
+password = "$NOVA_PASS""\
 >> /etc/neutron/neutron.conf
 
 
@@ -46,12 +49,12 @@ project_domain_name = default
 user_domain_name = default
 project_name = service
 username = neutron
-password = "$password""\
+password = "$NEUTRON_PASS""\
 >> /etc/neutron/neutron.conf
 
 sudo echo \
 "[database]
-connection = mysql+pymysql://neutron:"$password"@controller/neutron"\
+connection = mysql+pymysql://neutron:"$NEUTRON_PASS"@controller/neutron"\
 >> /etc/neutron/neutron.conf
 
 sudo echo \
@@ -137,7 +140,7 @@ sudo sed -i '/\[DEFAULT\]/d'  /etc/neutron/metadata_agent.ini
 sudo echo \
 "[DEFAULT]
 nova_metadata_host = controller
-metadata_proxy_shared_secret = "$password""\
+metadata_proxy_shared_secret = "$METADATA_SECRET""\
 >> /etc/neutron/metadata_agent.ini
 
 sudo sed -i '/\[neutron\]/d'  /etc/nova/nova.conf
@@ -150,9 +153,9 @@ user_domain_name = default
 region_name = RegionOne
 project_name = service
 username = neutron
-password = "$password"
+password = "$NEUTRON_PASS"
 service_metadata_proxy = true
-metadata_proxy_shared_secret = "$password""\
+metadata_proxy_shared_secret = "$METADATA_SECRET""\
 >> /etc/nova/nova.conf
 
 

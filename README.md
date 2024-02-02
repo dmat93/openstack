@@ -1,17 +1,21 @@
 # GUIDA
-Testato su Ubuntu 22.04.3 LTS. Assicurati che tutte le macchine abbiano questa versione di ubuntu, altrimenti potrebbe non funzionare il discovery dei compute.
+Tested on Ubuntu 22.04.3 LTS. Make sure all machines have this version of ubuntu, otherwise compute discovery may not work.
 
 ### COMPUTE E CONTROLLER
-Utilizza la verisone zed
+Use the zed verisone
 
 ```bash
-
 sudo add-apt-repository cloud-archive:zed
-
 ```
-## Configurazione rete
-### COMPUTE E CONTROLLER
-Modifica */etc/hosts* commentando la riga contenente 127.0.1.1 e aggiungendo ip e host dei controller/compute
+## Generate passwords
+Use the following script to generate passwords to be used during the installation. Files will be created in the local folder.
+```bash
+./generate_passwords.sh
+```
+
+## Network configuration
+### COMPUTE and CONTROLLER
+Edit */etc/hosts* by commenting out the line containing 127.0.1.1 and adding ip and controller/compute hosts
 
 ```bash
 
@@ -26,46 +30,36 @@ Modifica */etc/hosts* commentando la riga contenente 127.0.1.1 e aggiungendo ip 
 
 ```
 
-Specifica l'interfaccia della rete di managment
-
-```bash
-
-sudo ./controller/net.sh enp1s0
-
-```
-
 ## Chrony
-### COMPUTE E CONTROLLER
-Aggiungi il cidr della rete di managment
+### COMPUTE and CONTROLLER
+Add the CIDR of the managment network.
 
 ```bash
-
 sudo ./controller/chrony.sh 192.168.123.0/24
-
 ```
 
 ## Mysql
 ### Controller
-Aggiungi ip del controller
+Add controller ip
 
 ```bash
-sudo ./controller/mysql.sh 192.168.123.150
+sudo ./controller/mysql.sh <ip-controller>
 ```
 
 ## RabbitMQ
 ### Controller
-Crea password rabbit
+Create rabbit password
 
 ```bash
-sudo ./controller/rabbitmq.sh root
+sudo ./controller/rabbitmq.sh
 ```
 
 ## Memcache
 ### Controller
-Aggiungi ip controller
+Add ip controller
 
 ```bash
-sudo ./controller/memcached.sh 192.168.123.150
+sudo ./controller/memcached.sh <ip-controller>
 ```
 
 ## ETCD
@@ -73,17 +67,17 @@ sudo ./controller/memcached.sh 192.168.123.150
 Aggiungi ip controller
 
 ```bash
-sudo ./controller/etcd.sh 192.168.123.150
+sudo ./controller/etcd.sh <ip-controller>
 ```
 ## Keystone
 ### Controller
-Crea password e passa ip controller. Potrebbe richiedere qualche minuto!
+It may take a few minutes!
 
 ```bash
-sudo ./controller/keystone.sh root 192.168.123.150
+sudo ./controller/keystone.sh <ip-controller>
 ```
 
-Verifica che tutto sia andato bene. 
+Verify that everything went well. 
 
 ```bash
 . admin-openrc
@@ -92,7 +86,7 @@ openstack --os-auth-url http://controller:5000/v3 \
 --os-project-name admin --os-username admin token issue
 ```
 
-Se l'output è cosi allora ok:
+If the output is like that then okay:
 
 ```bash
 +------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -107,39 +101,39 @@ Se l'output è cosi allora ok:
 
 ## Glance
 ### Controller
-Crea password per il DB.
 
 ```bash
-sudo ./controller/glance_1.sh root
+sudo ./controller/glance_1.sh
 ```
-Crea utente e scegli nuova password. Si aprirà una schermata in cui ti chiede di creare una nuova password.
+Create user.
 ```bash
-openstack user create --domain default --password-prompt glance
+# The password GLANCE_PASS is used
+openstack user create --domain default --password `cat GLANCE_PASS` glance
 ```
 
-Esegui senza sudo! Usa la password scelta al passo precedente
+Run without sudo! 
 ```bash
-./controller/glance_2.sh root 192.168.123.150
+./controller/glance_2.sh <ip-controller>
 ```
 
-Esegui con sudo! Usa la password scelta al passo precedente
+Run with sudo! 
 
 ```bash
-sudo ./controller/glance_3.sh root 192.168.123.150
+sudo ./controller/glance_3.sh <ip-controller>
 ```
-Esegui senza sudo!
+Run without sudo!
 
 ```bash
 ./controller/glance_4.sh  
 ```
 
-#### Per testare
+#### Testing
 ```bash
 wget http://download.cirros-cloud.net/0.5.1/cirros-0.5.1-x86_64-disk.img
 glance image-create --name "cirros" --file cirros-0.5.1-x86_64-disk.img --disk-format qcow2 --container-format bare --visibility=public 
 ```
 
-Se l'output è cosi allora OK:
+If the output is like that then OK:
 
 ```bash
 +------------------+----------------------------------------------------------------------------------+
@@ -169,34 +163,33 @@ Se l'output è cosi allora OK:
 ```
 ## Placement
 ### Controller
-Crea password per il DB.
-
 ```bash
-sudo ./controller/placement_1.sh root
+sudo ./controller/placement_1.sh
 ```
 
-Si aprirà una schermata da cui creare una nuova password
+Create the user
 
 ```bash
-openstack user create --domain default --password-prompt placement
+# Password PLACEMENT_PASS is used 
+openstack user create --domain default --password `cat PLACEMENT_PASS` placement
 ```
 
-Eseguire (Senza sudo!) inserendo la password creata precedentemente
+Run (Without sudo!) by entering the previously created password
 
 ```bash
-./controller/placement_2.sh 192.168.123.150
+./controller/placement_2.sh <ip-controller>
 ```
 
-Eseguire (Con sudo!) inserendo la password creata precedentemente e l'ip del controller
+Run (With sudo!) 
 ```bash
-sudo ./controller/placement_3.sh root 192.168.123.150
+sudo ./controller/placement_3.sh <ip-controller>
 ```
 
-#### Per testare
+#### Testing
 ```bash
 sudo placement-status upgrade check
 ```
-Se l'output è cosi allora ok
+If the output is like this then ok
 ```bash
 +-------------------------------------------+
 | Upgrade Check Results                     |
@@ -217,41 +210,41 @@ Se l'output è cosi allora ok
 
 ## Nova
 ### Controller
-Crea password per il DB.
 
 ```bash
-sudo ./controller/nova_1.sh root
+sudo ./controller/nova_1.sh
 ```
 
-Si aprirà una schermata da cui creare una nuova password
+Create the user
 
 ```bash
-openstack user create --domain default --password-prompt nova
+# The password NOVA_PASS is used
+openstack user create --domain default --password `cat NOVA_PASS` nova
 ```
 
-Eseguire (Senza sudo!) inserendo la password creata precedentemente
+Run (Without sudo!) by entering the previously created password
 
 ```bash
-./controller/nova_2.sh 192.168.123.150
+./controller/nova_2.sh <ip-controller>
 ```
 
-Eseguire (Con sudo!) inserendo la password creata precedentemente e l'ip del controller
+Run (With sudo!) 
 ```bash
-sudo ./controller/nova_3.sh root 192.168.123.150
+sudo ./controller/nova_3.sh <ip-controller>
 ```
 ### Compute
-Specifica password creata in precedenza e ip del **compute**
+Specifies the IP of **compute**
 ```bash
-sudo ./compute/nova.sh 192.168.123.177 root 
+sudo ./compute/nova.sh <ip-compute>  
 ```
 ### Controller
-Discovery dei compute.
+Discovery of computes.
 
 ```bash
 sudo su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova
 openstack compute service list
 ```
-L'output dovrebbe essere simile a:
+The output should look like:
 
 ```bash
 +--------------------------------------+----------------+------------+----------+---------+-------+----------------------------+
@@ -266,41 +259,39 @@ L'output dovrebbe essere simile a:
 
 ## Neutron
 ### Controller
-Crea password per il DB.
-
 ```bash
-sudo ./controller/neutron_1.sh root 
+sudo ./controller/neutron_1.sh 
 ```
 
-Si aprirà una schermata da cui creare una nuova password
-
+Create the user
 ```bash
-openstack user create --domain default --password-prompt neutron
+# The password NEUTRON_PASS is used
+openstack user create --domain default --password `cat NEUTRON_PASS` neutron
 ```
 
-Eseguire (Senza sudo!) 
+Run (Without sudo!) 
 
 ```bash
-./controller/neutron_2.sh 192.168.123.150
+./controller/neutron_2.sh <ip-controller>
 ```
 
-Eseguire (Con sudo!) inserendo la password creata precedentemente e l'ip del controller
+Run (With sudo!) 
 ```bash
-sudo ./controller/neutron_3.sh root 192.168.123.150
+sudo ./controller/neutron_3.sh <ip-controller>
 ```
 ### Compute
-Specifica password creata in precedenza e ip del **compute**
+Specificy the IP of the **compute**
 ```bash
-sudo ./compute/neutron.sh root 192.168.123.177
+sudo ./compute/neutron.sh <ip-compute>
 ```
 
-### Per testare
-Esegui sul controller
+### Testing
+Run on the controller
 ```bash
 openstack network agent list
 ```
 
-Se l'output è cosi allora ok:
+If the output is like that then okay:
 ```bash
 +--------------------------------------+--------------------+------------+-------------------+-------+-------+---------------------------+
 | ID                                   | Agent Type         | Host       | Availability Zone | Alive | State | Binary                    |
@@ -317,7 +308,7 @@ Se l'output è cosi allora ok:
 ```bash
 sudo apt install openstack-dashboard -y
 ```
-Aggiungi le seguenti righe a */etc/openstack-dashboard/local_settings.py* commentando quelle già esistenti:
+Add the following lines to `/etc/openstack-dashboard/local_settings.py` commenting on existing ones:
 
 ```bash
 
@@ -325,12 +316,12 @@ Aggiungi le seguenti righe a */etc/openstack-dashboard/local_settings.py* commen
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '192.168.123.150:11211',
+        'LOCATION': '<replace-with-ip-controller>:11211',
     },
 }
 
 
-OPENSTACK_HOST = "192.168.123.150"
+OPENSTACK_HOST = "<replace-with-ip-controller>"
 OPENSTACK_KEYSTONE_URL = "http://%s:5000/v3" % OPENSTACK_HOST
 
 OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT = True
@@ -347,7 +338,7 @@ OPENSTACK_KEYSTONE_DEFAULT_ROLE = "member"
 
 TIME_ZONE = "Europe/Rome"
 ```
-Aggiungi la seguente riga a */etc/apache2/conf-available/openstack-dashboard.conf* (se necessario):
+Add the following line to `/etc/apache2/conf-available/openstack-dashboard.conf` (if necessary):
 ```bash
 WSGIApplicationGroup %{GLOBAL}
 ```
@@ -356,10 +347,10 @@ WSGIApplicationGroup %{GLOBAL}
 sudo systemctl reload apache2.service
 ```
 
-Ora vai a 192.168.123.150/horizon per accedere.
+Go to `http://192.168.123.150/horizon` to access and test.
 
 
-## Rete fisica
+## Rete fisica <mark> TODO </mark>
 ### Controller
 Esegui esattamente questo comando
 ```bash

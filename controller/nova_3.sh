@@ -1,6 +1,8 @@
 #!/bin/sh
-password=$1
-ip=$2
+NOVA_PASS=`cat NOVA_PASS`
+RABBIT_PASS=`cat RABBIT_PASS`
+PLACEMENT_PASS=`cat PLACEMENT_PASS`
+ip=$1
 
 sudo sed -i '/connection = sqlite/d' /etc/nova/nova.conf
 sudo sed -i '/connection = sqlite/d' /etc/nova/nova.conf
@@ -21,18 +23,18 @@ sudo sed -i '/\[service_user\]/d' /etc/nova/nova.conf
 
 sudo echo \
 "[api_database]
-connection = mysql+pymysql://nova:"$password"@controller/nova_api"\
+connection = mysql+pymysql://nova:"$NOVA_PASS"@controller/nova_api"\
 >> /etc/nova/nova.conf
 
 sudo echo \
 "[database]
-connection = mysql+pymysql://nova:"$password"@controller/nova"\
+connection = mysql+pymysql://nova:"$NOVA_PASS"@controller/nova"\
 >> /etc/nova/nova.conf
 
 
 sudo echo \
 "[DEFAULT]
-transport_url = rabbit://openstack:"$password"@controller:5672/
+transport_url = rabbit://openstack:"$RABBIT_PASS"@controller:5672/
 log_dir = /var/log/nova
 lock_path = /var/lock/nova
 state_path = /var/lib/nova
@@ -77,7 +79,7 @@ auth_type = password
 user_domain_name = Default
 auth_url = http://"$ip":5000/v3
 username = placement
-password = "$password""\
+password = "$PLACEMENT_PASS""\
 >> /etc/nova/nova.conf
 
 
@@ -91,7 +93,7 @@ project_domain_name = Default
 project_name = service
 user_domain_name = Default
 username = nova
-password = "$password""\
+password = "$NOVA_PASS""\
 >> /etc/nova/nova.conf
 
 sudo echo \
@@ -104,7 +106,7 @@ project_domain_name = Default
 user_domain_name = Default
 project_name = service
 username = nova
-password = "$password""\
+password = "$NOVA_PASS""\
 >> /etc/nova/nova.conf
 
 su -s /bin/sh -c "nova-manage api_db sync" nova

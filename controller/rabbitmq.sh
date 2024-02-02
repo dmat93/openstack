@@ -1,5 +1,5 @@
 #!/bin/sh
-RABBIT_PASS=$1
+RABBIT_PASS=`cat RABBIT_PASS`
 
 sudo apt install rabbitmq-server -y
 sudo rabbitmqctl add_user openstack $RABBIT_PASS

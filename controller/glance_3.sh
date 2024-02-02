@@ -1,7 +1,7 @@
 #!/bin/sh
 
-password=$1
-ip_controller=$2
+GLANCE_PASS=`cat GLANCE_PASS`
+ip_controller=$1
 
 sudo apt install glance -y
 sudo sed -i '/connection = ' /etc/glance/glance-api.conf
@@ -12,7 +12,7 @@ sudo sed -i '/\[glance_store\]/d' /etc/glance/glance-api.conf
 
 sudo echo \
 "[database]
-connection = mysql+pymysql://glance:"$password"@controller/glance"\
+connection = mysql+pymysql://glance:"$GLANCE_PASS"@controller/glance"\
 >> /etc/glance/glance-api.conf
 
 sudo echo \
@@ -25,7 +25,7 @@ project_domain_name = Default
 user_domain_name = Default
 project_name = service
 username = glance
-password = "$password""\
+password = "$GLANCE_PASS""\
 >> /etc/glance/glance-api.conf
 
 sudo echo \

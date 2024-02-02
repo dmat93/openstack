@@ -1,12 +1,12 @@
 #!/bin/sh
 
-password=$1
+NOVA_PASS=`cat NOVA_PASS`
 sudo mysql -e "CREATE DATABASE nova_api;"
 sudo mysql -e "CREATE DATABASE nova;"
 sudo mysql -e "CREATE DATABASE nova_cell0;"
 
-sudo mysql -e "CREATE USER 'nova'@'%' IDENTIFIED BY '"$password"';"
-sudo mysql -e "CREATE USER 'nova'@'localhost' IDENTIFIED BY'"$password"';"
+sudo mysql -e "CREATE USER 'nova'@'%' IDENTIFIED BY '"$NOVA_PASS"';"
+sudo mysql -e "CREATE USER 'nova'@'localhost' IDENTIFIED BY'"$NOVA_PASS"';"
 
 sudo mysql -e "GRANT ALL PRIVILEGES ON nova_api.* TO 'nova'@'localhost';"
 sudo mysql -e "GRANT ALL PRIVILEGES ON nova_api.* TO 'nova'@'%';"

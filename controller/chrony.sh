@@ -1,3 +1,4 @@
+#!/bin/sh
 apt install chrony -y
 
 
